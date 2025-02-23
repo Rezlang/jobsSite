@@ -1,3 +1,5 @@
+from typing import Optional, List, Dict, Any
+from pydantic import BaseModel, Field
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -34,6 +36,7 @@ class Job(BaseModel):
     workLocation: str
     employmentType: str
     careerLevel: str
+    custom_questions: List[Dict[str, Any]] = Field(default_factory=list)
 
 # Create a new job
 
@@ -42,8 +45,10 @@ class Job(BaseModel):
 def create_job(job: Job):
     doc_ref = db.collection('jobs').document()
     job.id = doc_ref.id
+    # Store the job data including custom_questions; we exclude the id since it's auto-assigned.
     doc_ref.set(job.dict(exclude={"id"}))
     return job
+
 
 # Get all jobs
 

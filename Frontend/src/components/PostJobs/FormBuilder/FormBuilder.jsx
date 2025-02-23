@@ -18,7 +18,7 @@ const questionComponents = {
 let idCounter = 0;
 const SLOT_HEIGHT = 160;
 
-const FormBuilder = () => {
+const FormBuilder = ({ onSubmit }) => {
   const [questions, setQuestions] = useState([]);
   // Shared drag state: holds { id, initialIndex, offset } for the question being dragged
   const [draggingState, setDraggingState] = useState(null);
@@ -52,69 +52,81 @@ const FormBuilder = () => {
     });
   };
 
-  return (
-    <Box sx={{ display: 'flex', height: '100vh', position: 'relative' }}>
-      {/* Main panel displaying questions */}
-      <Box
-        className="main-panel"
-        sx={{
-          flex: 1,
-          position: 'relative',
-          overflow: 'auto',
-          bgcolor: '#f9f9f9',
-          p: 2,
-          minHeight: '100vh'
-        }}
-      >
-        {questions.map((q, index) => {
-          const Component = questionComponents[q.type];
-          return (
-            <DraggableQuestion
-              key={q.id}
-              question={q}
-              index={index}
-              totalItems={questions.length}
-              slotHeight={SLOT_HEIGHT}
-              reorderQuestion={reorderQuestion}
-              draggingState={draggingState}
-              setDraggingState={setDraggingState}
-            >
-              <Component
-                question={q}
-                updateQuestion={(data) => updateQuestion(q.id, data)}
-              />
-            </DraggableQuestion>
-          );
-        })}
-      </Box>
+  const handleSubmitJob = () => {
+    // Pass custom questions data to the parent component.
+    onSubmit(questions);
+  };
 
-      {/* Tool panel for adding new questions */}
-      <Box
-        className="tool-list"
-        sx={{
-          width: 250,
-          borderLeft: '1px solid #ccc',
-          p: 2,
-          bgcolor: '#fff'
-        }}
-      >
-        <Typography variant="h6" gutterBottom>
-          Tools
-        </Typography>
-        <Button variant="contained" fullWidth sx={{ mb: 1 }} onClick={() => addQuestion('short')}>
-          Short Response
-        </Button>
-        <Button variant="contained" fullWidth sx={{ mb: 1 }} onClick={() => addQuestion('long')}>
-          Long Response
-        </Button>
-        <Button variant="contained" fullWidth sx={{ mb: 1 }} onClick={() => addQuestion('numerical')}>
-          Numerical Input
-        </Button>
-        <Button variant="contained" fullWidth sx={{ mb: 1 }} onClick={() => addQuestion('checkbox')}>
-          Check Boxes
-        </Button>
-        <Button variant="contained" fullWidth sx={{ mb: 1 }} onClick={() => addQuestion('single')}>
-          Single Choice
+  return (
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh', position: 'relative' }}>
+      <Box sx={{ display: 'flex', flex: 1 }}>
+        {/* Main panel displaying questions */}
+        <Box
+          className="main-panel"
+          sx={{
+            flex: 1,
+            position: 'relative',
+            overflow: 'auto',
+            bgcolor: '#f9f9f9',
+            p: 2,
+            minHeight: '100vh'
+          }}
+        >
+          {questions.map((q, index) => {
+            const Component = questionComponents[q.type];
+            return (
+              <DraggableQuestion
+                key={q.id}
+                question={q}
+                index={index}
+                totalItems={questions.length}
+                slotHeight={SLOT_HEIGHT}
+                reorderQuestion={reorderQuestion}
+                draggingState={draggingState}
+                setDraggingState={setDraggingState}
+              >
+                <Component
+                  question={q}
+                  updateQuestion={(data) => updateQuestion(q.id, data)}
+                />
+              </DraggableQuestion>
+            );
+          })}
+        </Box>
+
+        {/* Tool panel for adding new questions */}
+        <Box
+          className="tool-list"
+          sx={{
+            width: 250,
+            borderLeft: '1px solid #ccc',
+            p: 2,
+            bgcolor: '#fff'
+          }}
+        >
+          <Typography variant="h6" gutterBottom>
+            Tools
+          </Typography>
+          <Button variant="contained" fullWidth sx={{ mb: 1 }} onClick={() => addQuestion('short')}>
+            Short Response
+          </Button>
+          <Button variant="contained" fullWidth sx={{ mb: 1 }} onClick={() => addQuestion('long')}>
+            Long Response
+          </Button>
+          <Button variant="contained" fullWidth sx={{ mb: 1 }} onClick={() => addQuestion('numerical')}>
+            Numerical Input
+          </Button>
+          <Button variant="contained" fullWidth sx={{ mb: 1 }} onClick={() => addQuestion('checkbox')}>
+            Check Boxes
+          </Button>
+          <Button variant="contained" fullWidth sx={{ mb: 1 }} onClick={() => addQuestion('single')}>
+            Single Choice
+          </Button>
+        </Box>
+      </Box>
+      <Box sx={{ p: 2 }}>
+        <Button variant="contained" color="primary" fullWidth onClick={handleSubmitJob}>
+          Submit Job
         </Button>
       </Box>
     </Box>

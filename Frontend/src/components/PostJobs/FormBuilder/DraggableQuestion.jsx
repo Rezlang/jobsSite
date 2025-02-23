@@ -89,7 +89,7 @@ const positionY = (draggingState && draggingState.id === question.id)
           elevation={3}
           sx={{
             p: 2,
-            pr: 5,
+            pr: 15,
             position: 'relative',
             height: slotHeight, // fixed height ensures snapping with no extra space
             overflowY: 'auto',
@@ -109,7 +109,7 @@ const positionY = (draggingState && draggingState.id === question.id)
               alignItems: 'center'
             }}
           >
-            <Box component="span" sx={{ fontSize: '24px', userSelect: 'none' }}>
+            <Box component="span" sx={{ fontSize: '48px', userSelect: 'none' , color: 'rgba(0,0,0,0.5)'}}>
               &#9776;
             </Box>
           </Box>
