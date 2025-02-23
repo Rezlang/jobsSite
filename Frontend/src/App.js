@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
-import LeftPanel from './components/LeftPanel';
-import RightPanel from './components/RightPanel';
+import LeftPanel from './components/JobSearch/LeftPanel';
+import RightPanel from './components/JobSearch/RightPanel';
 import { fetchJobs } from './components/JobManager';
 
 const App = () => {
@@ -15,6 +15,10 @@ const App = () => {
       try {
         const data = await fetchJobs();
         setJobs(data); // Update state with fetched jobs.
+        // Automatically select the first job if available.
+        if (data && data.length > 0) {
+          setSelectedJob(data[0]);
+        }
       } catch (error) {
         console.error("Error fetching jobs:", error);
       }

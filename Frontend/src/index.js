@@ -3,8 +3,10 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './index.css';
 import App from './App';
-import JobCreationForm from './components/JobCreationForm';
+import JobCreationForm from './components/PostJobs/JobCreationForm';
 import reportWebVitals from './reportWebVitals';
+import Dashboard from './components/PostJobs/Dashboard'
+import FormBuilder from './components/PostJobs/FormBuilder/FormBuilder';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -13,6 +15,8 @@ root.render(
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/create" element={<JobCreationForm />} />
+        <Route path="/dash" element={<Dashboard />} />
+        <Route path="/test" element={<FormBuilder />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>

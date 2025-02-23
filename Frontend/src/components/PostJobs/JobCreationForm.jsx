@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { createJob } from './JobManager';
+import { createJob } from '../JobManager';
 import {
   Container,
   Paper,

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import Toolbar from './Toolbar';
 import JobItem from './JobItem';
+import Skeleton from '@mui/material/Skeleton';
 
-const JobsList = ({ jobs, onDeleteJob }) => {
+const JobsList = ({ jobs, onDeleteJob, onJobSelect, loading }) => {
   const [criteria, setCriteria] = useState({
     searchTerm: '',
     filters: {
@@ -38,17 +39,29 @@ const JobsList = ({ jobs, onDeleteJob }) => {
     <div>
       <Toolbar onApplyFilters={handleApplyFilters} />
       <div>
-        {filteredJobs.map(job => (
-          <JobItem 
-            key={job.id} 
-            job={job} 
-            onClick={() => {
-              // Handle job click
-            }}
-          >
-            <button onClick={() => onDeleteJob(job.id)}>Delete Job</button>
-          </JobItem>
-        ))}
+        {loading ? (
+          <div/>
+        ) : filteredJobs.length > 0 ? (
+          filteredJobs.map(job => (
+            <JobItem 
+              key={job.id} 
+              job={job} 
+              onClick={() => onJobSelect(job)}
+            >
+              <button onClick={() => onDeleteJob(job.id)}>Delete Job</button>
+            </JobItem>
+          ))
+        ) : (
+          Array.from(new Array(3)).map((_, index) => (
+            <Skeleton
+              key={index}
+              variant="rectangular"
+              width="100%"
+              height={150}
+              style={{ marginBottom: 8, borderRadius: 2 }}
+            />
+          ))
+        )}
       </div>
     </div>
   );
