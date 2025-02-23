@@ -15,12 +15,10 @@ const DraggableQuestion = ({
 }) => {
   const nodeRef = useRef(null);
 
-  // When drag starts, record this question as the active one
   const handleDragStart = (e, data) => {
     setDraggingState({ id: question.id, initialIndex: index, offset: 0 });
   };
 
-  // Update the drag offset as the question is moved
   const handleDrag = (e, data) => {
     if (draggingState && draggingState.id === question.id) {
       const newOffset = draggingState.offset + data.deltaY;
@@ -28,40 +26,45 @@ const DraggableQuestion = ({
     }
   };
 
-  // On drag stop, compute the new index and reorder the questions accordingly
-  const handleDragStop = (e, data) => {
-    if (draggingState && draggingState.id === question.id) {
-      const targetIndex = Math.max(
-        0,
-        Math.min(totalItems - 1, Math.round((draggingState.initialIndex * slotHeight + draggingState.offset) / slotHeight))
-      );
-      if (targetIndex !== draggingState.initialIndex) {
-        reorderQuestion(question.id, targetIndex);
-      }
-      setDraggingState(null);
-    }
-  };
+  const GAP = 10; // Space between questions
 
-  // Determine the visual Y position.
-  // - For the dragged question: show it at its initial position plus the drag offset.
-  // - For other questions: if they fall between the dragged question’s original and target positions, shift them.
-  let additionalOffset = 0;
-  if (draggingState && draggingState.id !== question.id) {
-    const { initialIndex, offset } = draggingState;
+const handleDragStop = (e, data) => {
+  if (draggingState && draggingState.id === question.id) {
     const targetIndex = Math.max(
       0,
-      Math.min(totalItems - 1, Math.round((initialIndex * slotHeight + offset) / slotHeight))
+      Math.min(
+        totalItems - 1,
+        Math.round((draggingState.initialIndex * (slotHeight + GAP) + draggingState.offset) / (slotHeight + GAP))
+      )
     );
-    if (initialIndex < index && index <= targetIndex) {
-      additionalOffset = -slotHeight;
-    } else if (initialIndex > index && index >= targetIndex) {
-      additionalOffset = slotHeight;
+    if (targetIndex !== draggingState.initialIndex) {
+      reorderQuestion(question.id, targetIndex);
     }
+    setDraggingState(null);
   }
+};
 
-  const positionY = (draggingState && draggingState.id === question.id)
-    ? (draggingState.initialIndex * slotHeight + draggingState.offset)
-    : (index * slotHeight + additionalOffset);
+let additionalOffset = 0;
+if (draggingState && draggingState.id !== question.id) {
+  const { initialIndex, offset } = draggingState;
+  const targetIndex = Math.max(
+    0,
+    Math.min(
+      totalItems - 1,
+      Math.round((initialIndex * (slotHeight + GAP) + offset) / (slotHeight + GAP))
+    )
+  );
+  if (initialIndex < index && index <= targetIndex) {
+    additionalOffset = -(slotHeight + GAP);
+  } else if (initialIndex > index && index >= targetIndex) {
+    additionalOffset = (slotHeight + GAP);
+  }
+}
+
+const positionY = (draggingState && draggingState.id === question.id)
+  ? (draggingState.initialIndex * (slotHeight + GAP) + draggingState.offset)
+  : (index * (slotHeight + GAP) + additionalOffset);
+
 
   return (
     <Draggable
@@ -79,7 +82,6 @@ const DraggableQuestion = ({
           position: 'absolute', 
           width: '90%', 
           left: '5%',
-          // Only animate when no drag is active for smoother snapping
           transition: draggingState ? 'none' : 'top 0.2s ease'
         }}
       >
@@ -87,19 +89,21 @@ const DraggableQuestion = ({
           elevation={3}
           sx={{
             p: 2,
+            pr: 5,
             position: 'relative',
-            height: slotHeight - 10,
+            height: slotHeight, // fixed height ensures snapping with no extra space
+            overflowY: 'auto',
             boxSizing: 'border-box'
           }}
         >
           {children}
-          {/* Drag handle at the bottom-right */}
           <Box
             className="drag-handle"
             sx={{
               position: 'absolute',
               right: 8,
-              bottom: 8,
+              top: '50%',
+              transform: 'translateY(-50%)',
               cursor: 'grab',
               display: 'flex',
               alignItems: 'center'
