@@ -51,10 +51,14 @@ const App = () => {
   const [selectedJob, setSelectedJob] = useState(null);
 
   return (
-    <Box sx={{ display: 'flex', height: '100vh', fontFamily: 'Arial, sans-serif' }}>
-      <LeftPanel jobs={jobs} onJobSelect={setSelectedJob} />
-      <RightPanel job={selectedJob} />
+    <Box>
+      <Box sx={{ display: 'flex', height: '100vh', fontFamily: 'Arial, sans-serif' }}>
+        <LeftPanel jobs={jobs} onJobSelect={setSelectedJob} />
+        <RightPanel job={selectedJob} />
+      </Box>
     </Box>
+    
+    
   );
 };
 
